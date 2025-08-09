@@ -1,26 +1,35 @@
 # WeaveTrace
-WeaveTrace – A cultural e-commerce prototype connecting buyers with Tamil Nadu handloom weavers. Features product listings, real-time chat with artisans, weaving details, and a cart system. Built with HTML, CSS, JS, and Firebase. 
-Features:
 
-🛍 Amazon-style product listing for sarees and textiles from Tamil Nadu
+**WeaveTrace** is a cultural e-commerce prototype connecting buyers directly with Tamil Nadu’s traditional handloom weavers.  
+Built for the IIT Delhi Handloom Hackathon, it bridges artisans and customers with product details, real-time chat, and a cart system.
 
-💬 Built-in real-time chat with artisans via Firebase Firestore (no WhatsApp needed)
+## 🚀 Features
+- 🛍 **Product Listings** for Kanchipuram, Coimbatore, Erode, Karur sarees & textiles
+- 💬 **Real-time Chat** with weavers (Firebase Firestore)
+- 🧵 **Artisan Profiles** with bios & weaving details
+- 🛒 **Shopping Cart** using localStorage
+- 📱 Responsive static site
 
-🧵 Authentic weaving details & artisan bios for every product
+## 🖼 Screenshots
 
-🛒 Cart system using localStorage for a seamless shopping experience
+### Home Page
+![Home Page](screenshots/home.png)
 
-📱 Responsive static site – runs offline or can be hosted on Firebase Hosting
+### Product Page with Chat
+![Product Page](screenshots/product.png)
 
-Tech Stack:
+### Cart Page
+![Cart Page](screenshots/cart.png)
 
-HTML, CSS, JavaScript (Vanilla)
+## 🛠 Tech Stack
+- HTML, CSS, JavaScript
+- Firebase Authentication & Firestore
+- LocalStorage for cart persistence
 
-Firebase (Auth + Firestore)
+## 📌 Purpose
+Revive handloom culture by making it digitally accessible and profitable for artisans.
 
-LocalStorage for cart persistence
-
-Purpose:
-Reviving India’s handloom industry by making it digitally accessible, while keeping artisans at the heart of the sales process.
+## 📄 License
+MIT License
 
 
