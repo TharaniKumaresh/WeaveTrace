@@ -1,0 +1,9 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Cart</title><link rel="stylesheet" href="styles.css"></head><body>
+<header class="topbar"><div class="brand">WeaveTrace</div><nav><a href="index.html">Home</a></nav></header>
+<main class="container"><h1>Your Cart</h1><div id="cart-area"></div><p><a href="index.html" class="btn">Continue shopping</a></p></main><footer class="footer">WeaveTrace</footer>
+<script>
+async function loadProducts(){ const res = await fetch('products.json'); return await res.json(); }
+function updateCartArea(){ const cart = JSON.parse(localStorage.getItem('weavetrace_cart')||'[]'); const area = document.getElementById('cart-area'); area.innerHTML=''; if(cart.length===0){ area.innerHTML='<p>Your cart is empty.</p>'; return; } let total=0; cart.forEach(item=>{ const p = window._products.find(x=>x.id===item.id); total+=p.price*item.qty; const el=document.createElement('div'); el.className='cart-item'; el.innerHTML=`<img src='${p.images[0]}' style='width:100px;height:100px;object-fit:cover'><div><h4>${p.saree_type} — ${p.district}</h4><p>Qty: ${item.qty}</p><p>Price: ₹${p.price}</p><p><button onclick='remove(${p.id})' class='btn'>Remove</button></p></div>`; area.appendChild(el); }); const tot=document.createElement('div'); tot.className='checkout'; tot.innerHTML=`<h3>Total: ₹${total}</h3><p><button class='btn' onclick='alert("Demo checkout — integrate payment gateway")'>Checkout</button></p>`; area.appendChild(tot); }
+async function init(){ window._products = await loadProducts(); updateCartArea(); } init();
+function remove(id){ let cart=JSON.parse(localStorage.getItem('weavetrace_cart')||'[]'); cart=cart.filter(i=>i.id!==id); localStorage.setItem('weavetrace_cart',JSON.stringify(cart)); updateCartArea(); }
+</script></body></html>

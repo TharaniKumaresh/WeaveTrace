@@ -1,0 +1,87 @@
+[
+  {
+    "id": 1,
+    "district": "Kanchipuram",
+    "saree_type": "Kanjeevaram / Kanchipuram Silk",
+    "weaving_process": "Hand-woven on traditional pit looms using pure mulberry silk and zari, featuring temple borders and checks.",
+    "price": 8500,
+    "artisan": {
+      "name": "Lakshmi Devi",
+      "photo": "assets/lakshmi.jpg",
+      "whatsapp": "+919876543210",
+      "bio": "Third-generation weaver from Kanchipuram."
+    },
+    "images": [
+      "assets/kanchi1.jpg"
+    ],
+    "slug": "kanchipuram-kanjeevaram"
+  },
+  {
+    "id": 2,
+    "district": "Coimbatore",
+    "saree_type": "Coimbatore Cotton Saree",
+    "weaving_process": "Produced near spinning and yarn mills; known for durable cotton and neat finishing.",
+    "price": 1800,
+    "artisan": {
+      "name": "R. Kumar",
+      "photo": "assets/kumar.jpg",
+      "whatsapp": "+919912345678",
+      "bio": "Local cotton weaver and dyer."
+    },
+    "images": [
+      "assets/coimbatore1.jpg"
+    ],
+    "slug": "coimbatore-cotton"
+  },
+  {
+    "id": 3,
+    "district": "Erode",
+    "saree_type": "Erode Cotton Textiles",
+    "weaving_process": "Erode is a large weaving & processing hub; cotton sarees often show fine warp/weft.",
+    "price": 1500,
+    "artisan": {
+      "name": "Meena",
+      "photo": "assets/meena.jpg",
+      "whatsapp": "+919998887776",
+      "bio": "Weaver & finishing specialist."
+    },
+    "images": [
+      "assets/erode1.jpg"
+    ],
+    "slug": "erode-cotton"
+  },
+  {
+    "id": 4,
+    "district": "Karur",
+    "saree_type": "Karur Home Textiles (Bedsheets/Curtains)",
+    "weaving_process": "Home textile looms producing furnishing fabrics with regional motifs.",
+    "price": 1200,
+    "artisan": {
+      "name": "S. Ram",
+      "photo": "assets/ram.jpg",
+      "whatsapp": "+919977665544",
+      "bio": "Home textile master weaver."
+    },
+    "images": [
+      "assets/karur1.jpg"
+    ],
+    "slug": "karur-textiles"
+  },
+  {
+    "id": 5,
+    "district": "Madurai",
+    "saree_type": "Madurai Cotton / Sungudi",
+    "weaving_process": "Traditional block-dyeing and bandhani-like techniques with lightweight cotton.",
+    "price": 900,
+    "artisan": {
+      "name": "Anandhi",
+      "photo": "assets/anandhi.jpg",
+      "whatsapp": "+919911223344",
+      "bio": "Madurai textile artisan."
+    },
+    "images": [
+      "assets/madurai1.jpg"
+    ],
+    "slug": "madurai-sungudi"
+  }
+]

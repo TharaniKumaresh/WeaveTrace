@@ -1,0 +1,131 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WeaveTrace — Product</title><link rel="stylesheet" href="styles.css"></head><body>
+<header class="topbar"><div class="brand">WeaveTrace</div><nav><a href="index.html">Home</a> | <a href="cart.html">Cart <span id="cart-count"></span></a></nav></header>
+<main class="container">
+<a href="index.html">← Back</a>
+<div id="product-area"></div>
+</main>
+<footer class="footer">WeaveTrace — Prototype</footer>
+
+<!-- Firebase v8 -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyA4QkYH0V2MBK09k2unIcZWnOQb4r9_IQY",
+  authDomain: "weavetrace.firebaseapp.com",
+  projectId: "weavetrace",
+  storageBucket: "weavetrace.firebasestorage.app",
+  messagingSenderId: "783334842607",
+  appId: "1:783334842607:web:b1df1d38cc02127aadbb1a",
+  measurementId: "G-XMN22HXQTT"
+};
+// init
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+async function loadProducts(){ const res = await fetch('products.json'); return await res.json(); }
+function updateCartCount(){ const c = JSON.parse(localStorage.getItem('weavetrace_cart')||'[]'); const total = c.reduce((s,i)=>s+i.qty,0); document.getElementById('cart-count').textContent = total?('('+total+')'):''; }
+function getParam(name){ return new URLSearchParams(location.search).get(name); }
+
+// ensure anonymous auth
+auth.onAuthStateChanged(user=>{ if(!user) auth.signInAnonymously().catch(console.error); });
+
+(async ()=>{
+ const id = Number(getParam('id') || 1);
+ const products = await loadProducts();
+ const p = products.find(x=>x.id===id);
+ if(!p){ document.getElementById('product-area').innerHTML='<p>Product not found.</p>'; return; }
+ document.getElementById('product-area').innerHTML = `
+ <div class='prod'>
+  <div class='prod-left'><img src='${p.images[0]}' alt='${p.saree_type}'></div>
+  <div class='prod-right'>
+    <h2>${p.saree_type}</h2>
+    <p class='muted'>${p.district}</p>
+    <h3>Price: ₹${p.price}</h3>
+    <p>${p.weaving_process}</p>
+    <h4>Artisan</h4>
+    <div class='artisan'>
+      <img src='${p.artisan.photo}'>
+      <div><p><strong>${p.artisan.name}</strong></p><p class='muted'>${p.artisan.bio}</p></div>
+    </div>
+    <p><button class='btn' id='addCart'>Add to Cart</button> <button class='btn' id='openChatBtn' style='background:#fff;color:var(--primary);border:1px solid var(--primary)'>Chat with Weaver</button></p>
+    
+    <div id="chat-wrap" style="display:none;position:fixed;right:16px;bottom:16px;width:320px;z-index:200;background:#fff;border:1px solid #eee;border-radius:8px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px;background:#f5f5f5;border-radius:8px 8px 0 0">
+        <strong>Chat with Weaver</strong>
+        <button id="close-chat" style="background:transparent;border:none;cursor:pointer">X</button>
+      </div>
+      <div id="chat-messages" style="height:240px;overflow:auto;padding:8px"></div>
+      <div style="display:flex;gap:8px;padding:8px">
+        <input id="chat-text" placeholder="Write a message..." style="flex:1;padding:8px;border:1px solid #ddd;border-radius:6px" />
+        <button id="chat-send" class="btn">Send</button>
+      </div>
+    </div>
+  </div>
+ </div>
+ `;
+
+ // cart button
+ document.getElementById('addCart').addEventListener('click', ()=>{
+   let cart = JSON.parse(localStorage.getItem('weavetrace_cart')||'[]');
+   const idx = cart.findIndex(i=>i.id===p.id);
+   if(idx===-1) cart.push({id:p.id,qty:1}); else cart[idx].qty++;
+   localStorage.setItem('weavetrace_cart',JSON.stringify(cart));
+   updateCartCount();
+   alert('Added to cart');
+ });
+ updateCartCount();
+
+ // chat wiring (Firestore simple)
+ const openBtn = document.getElementById('openChatBtn');
+ const chatWrap = document.getElementById('chat-wrap');
+ const closeChat = document.getElementById('close-chat');
+ const chatMessages = document.getElementById('chat-messages');
+ const chatText = document.getElementById('chat-text');
+ const chatSend = document.getElementById('chat-send');
+
+ openBtn.addEventListener('click', ()=>{ chatWrap.style.display='block'; chatMessages.innerHTML='<p style="color:#888">Loading chat...</p>'; setupChat(); });
+ closeChat.addEventListener('click', ()=> chatWrap.style.display='none');
+
+ // setup chat
+ let unsub = null;
+ async function setupChat(){
+   // ensure signed in
+   if(!auth.currentUser){ await auth.signInAnonymously(); }
+   // use a simple chat collection per product: 'chats_product_{id}'
+   const chatCol = db.collection('chats_product_' + p.id);
+   // listen for messages
+   unsub = chatCol.orderBy('timestamp').onSnapshot(snapshot=>{
+     chatMessages.innerHTML='';
+     snapshot.forEach(doc=>{
+       const m = doc.data();
+       const el = document.createElement('div');
+       el.style.margin='6px 0';
+       el.innerHTML = `<strong>${m.name||'User'}</strong><div>${m.text}</div><small class='muted'>${m.ts}</small>`;
+       chatMessages.appendChild(el);
+     });
+     chatMessages.scrollTop = chatMessages.scrollHeight;
+   });
+   // send
+   chatSend.onclick = async ()=>{
+     const text = chatText.value.trim();
+     if(!text) return;
+     const user = auth.currentUser;
+     let name = 'Guest';
+     try {
+       const profDoc = await db.collection('users').doc(user.uid).get();
+       if(profDoc.exists && profDoc.data().displayName) name = profDoc.data().displayName;
+     } catch(e){}
+     await chatCol.add({ text, name, uid: user.uid, timestamp: firebase.firestore.FieldValue.serverTimestamp(), ts: new Date().toLocaleString() });
+     chatText.value='';
+   };
+ }
+})();
+</script>
+
+</body></html>
